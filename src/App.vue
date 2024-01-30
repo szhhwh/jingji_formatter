@@ -1,25 +1,44 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
+let menu_items = [
+  {
+    index: 1,
+    name: '首页',
+    path: '/'
+  },
+  {
+    index: 2,
+    name: '特刊格式化工具',
+    path: '/formater/sp'
+  }
+]
+
+const router = useRouter();
 </script>
 
 <template>
   <div id="app">
-    <v-layout class="rounded rounded-md">
-      <v-app-bar title="荆棘鸟文学社工具集"></v-app-bar>
+    <ElContainer>
+      <ElAside>
+        <ElMenu>
+          <ElMenuItem v-for="item in menu_items" :index="item.index.toString()" @click="() => { router.push(item.path) }">
+            {{ item.name }}</ElMenuItem>
+        </ElMenu>
+      </ElAside>
+      <ElMain>
+        <router-view v-slot="{ Component }">
+          <keep-alive>
+            <component :is="Component"></component>
+          </keep-alive>
+        </router-view>
+      </ElMain>
+    </ElContainer>
 
-      <v-navigation-drawer :width="200">
-        <v-list :nav="true">
-          <v-list-item link title="首页" href="/"></v-list-item>
-          <v-divider></v-divider>
-          <v-list-item link title="特刊正文格式化" href="/formater/sp"></v-list-item>
-          <v-list-item link title="设置" :disabled="true"></v-list-item>
-        </v-list>
-      </v-navigation-drawer>
-
-      <!-- vue-router -->
-      <RouterView></RouterView>
-
-    </v-layout>
   </div>
 </template>
 
-<style scoped></style>
+<style>
+.flex {
+  flex: 1;
+}
+</style>

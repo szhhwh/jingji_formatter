@@ -19,7 +19,7 @@ pub fn app_root() -> PathBuf {
     path
 }
 
-/// 判断传入的path是否存在
+/// 判断传入的 path 是否存在
 ///
 /// ## Return
 /// 返回布尔值：为真时路径存在
@@ -31,6 +31,7 @@ where
 }
 
 /// 创建文件
+/// 传入文件的绝对路径
 pub fn create_file<P>(filename: P) -> Result<(), AppError>
 where
     P: AsRef<Path>,
@@ -45,7 +46,7 @@ where
     Ok(())
 }
 
-/// 读取tauri.conf.json
+/// 读取 tauri.conf.json
 ///
 /// ## Return
 /// 返回 tauri::Config

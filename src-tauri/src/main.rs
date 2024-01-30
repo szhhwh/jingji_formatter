@@ -30,7 +30,8 @@ fn main() {
     }
     tauri::Builder::default()
         .plugin(log.build())
-        .invoke_handler(tauri::generate_handler![cmd::format])
+        .plugin(tauri_plugin_persisted_scope::init())
+        .invoke_handler(tauri::generate_handler![cmd::format,cmd::get_file_name])
         .setup(setup::init)
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -3,7 +3,7 @@ name = "jingji_formatter"
 version = "0.0.1"
 description = "jingji_formatter"
 authors = ["szhh"]
-license = ""
+license = "MIT"
 repository = ""
 edition = "2021"
 
@@ -13,10 +13,13 @@ edition = "2021"
 tauri-build = { version = "1.5", features = [] }
 
 [dependencies]
-tauri = { version = "1.5", features = ["shell-open"] }
+tauri = { version = "1.5", features = [ "dialog-all", "shell-open"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+# 日志插件
 tauri-plugin-log = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1", features = ["colored"] }
+# 持久化插件
+tauri-plugin-persisted-scope = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
 log = "0.4.19"
 thiserror = "1.0.40"
 semver = "1.0.18"
