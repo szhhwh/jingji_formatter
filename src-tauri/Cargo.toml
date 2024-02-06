@@ -24,6 +24,7 @@ log = "0.4.19"
 thiserror = "1.0.40"
 semver = "1.0.18"
 regex = "1.10.3"
+chrono = "0.4.33"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

@@ -4,6 +4,7 @@ use std::{
     path::PathBuf,
 };
 
+use chrono::Local;
 use jingji_formatter::error::AppError;
 use log::{debug, error};
 
@@ -56,18 +57,20 @@ impl Filefmt {
     /// # Return 返回值
     /// - Result<(), AppError>
     pub fn writetofile(&self, ext: &str) -> Result<(), AppError> {
+        let timestamp = Local::now().timestamp().to_string();
         let mut file_name = String::from(self.path.file_stem().unwrap().to_str().unwrap());
         let mut file_path = PathBuf::from(&self.path);
         let file_ext = String::from(file_path.extension().unwrap().to_string_lossy());
         file_name.push_str(ext);
+        file_name.push_str(&timestamp);
         file_path.set_file_name(file_name);
         file_path.set_extension(file_ext);
         let new_file = OpenOptions::new().write(true).create(true).open(file_path);
         match new_file {
             Ok(mut file) => {
                 let _ = file.write_all(self.text.as_bytes());
-                return Ok(())
-            },
+                return Ok(());
+            }
             Err(e) => return Err(AppError::Err(e.to_string())),
         }
     }
@@ -85,7 +88,7 @@ impl Filefmt {
     }
 
     pub fn fmt_bullets(&mut self) -> Result<(), AppError> {
-        let reg = r"\r\n\r\n";
+        let reg = r"(?:\r?\n){2,}";
         let rep = "\n•";
         self.fmt(reg, rep)?;
         Ok(())
@@ -96,29 +99,31 @@ impl Filefmt {
         let rep = "";
         self.fmt(reg, rep)?;
         Ok(())
-    }    
+    }
 }
 
 #[derive(PartialEq)]
 pub enum Fmttype {
     Default,
     Bullets,
-    Cleanspace
+    Cleanspace,
 }
 
-pub fn formating(path: PathBuf, tp: &Fmttype) -> Result<(), AppError>{
+pub fn formating(path: PathBuf, tp: &Fmttype) -> Result<(), AppError> {
     let mut file = Filefmt::new(path);
     match file.openfile() {
         Ok(_) => {
             if &Fmttype::Bullets == tp {
                 file.fmt_bullets()?;
+                file.writetofile("_bullets_")
             } else if &Fmttype::Cleanspace == tp {
                 file.fmt_cleanspace()?;
+                file.writetofile("_cleanspace_")
             } else {
                 error!("错误的格式化类型");
                 return Err(AppError::Err("错误的格式化类型".to_string()));
             }
-            file.writetofile("_formatted")
+            
         }
         Err(e) => {
             debug!("文件打开失败: {}", e);
