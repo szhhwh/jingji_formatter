@@ -11,7 +11,9 @@ interface Txtfile {
 }
 
 // 文件列表
-let filelist = ref<Txtfile[]>([])
+const filelist = ref<Txtfile[]>([])
+// 格式化模式选择
+const fmtclass = ref<string>('Bullets')
 
 // 触发格式化
 const format = () => {
@@ -26,7 +28,7 @@ const format = () => {
     ).then(
         async () => {
             // 调用格式化函数并传参
-            await invoke('format', { fileList: JSON.parse(JSON.stringify(filelist.value)) }).catch(
+            await invoke('format', { fileList: JSON.parse(JSON.stringify(filelist.value)), tp: JSON.parse(JSON.stringify(fmtclass.value)) }).catch(
                 (err) => {
                     ElNotification({
                         title: '错误',
@@ -117,21 +119,45 @@ const clearout = () => {
 </script>
 
 <template>
-    <section class="filetable">
-        <ElTable empty-text="未添加文件" :data="filelist" :stripe="true">
-            <el-table-column prop="name" label="文件名" />
-            <el-table-column prop="path" label="文件路径" />
-            <el-table-column fixed="right" label="操作">
-                <template #default="scope">
-                    <el-button type="danger" size="small" @click="deletefile(scope.$index, scope.row)">删除</el-button>
+    <ElRow>
+        <ElCol :span="24">
+            <el-card class="box-card">
+                <template #header>
+                    <div class="card-header">
+                        <ElText>功能选择</ElText>
+                    </div>
                 </template>
-            </el-table-column>
-
-        </ElTable>
-    </section>
-    <ElButton @click="addfile" size="large" type="default">添加文本文件</ElButton>
-    <ElButton @click="clearout" size="large" type="default">清除所有文件</ElButton>
-    <ElButton @click="format" size="large" type="primary">格式化</ElButton>
+                <ElRadioGroup v-model="fmtclass">
+                    <ElRadioButton label="Bullets">项目符号替换</ElRadioButton>
+                    <ElRadioButton label="Cleanspace">去除段首空格</ElRadioButton>
+                    <ElRadioButton label="开发中" :disabled="true"></ElRadioButton>
+                </ElRadioGroup>
+            </el-card>
+        </ElCol>
+    </ElRow>
+    <ElRow>
+        <ElCol :span="24">
+            <section class="filetable">
+                <ElTable empty-text="未添加文件" :data="filelist" :stripe="true">
+                    <el-table-column prop="name" label="文件名" />
+                    <el-table-column prop="path" label="文件路径" />
+                    <el-table-column fixed="right" label="操作">
+                        <template #default="scope">
+                            <el-button type="danger" size="small"
+                                @click="deletefile(scope.$index, scope.row)">删除</el-button>
+                        </template>
+                    </el-table-column>
+                </ElTable>
+            </section>
+        </ElCol>
+    </ElRow>
+    <ElRow>
+        <ElCol :span="24">
+            <ElButton @click="addfile" size="large" type="default">添加文本文件</ElButton>
+            <ElButton @click="clearout" size="large" type="default">清除所有文件</ElButton>
+            <ElButton @click="format" size="large" type="primary">格式化</ElButton>
+        </ElCol>
+    </ElRow>
 </template>
 
 <style scoped>
@@ -139,7 +165,7 @@ const clearout = () => {
     .filetable {
         display: block;
         overflow-y: scroll;
-        height: 70vh;
+        height: 65vh;
         width: auto;
     }
 }
