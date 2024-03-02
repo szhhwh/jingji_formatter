@@ -87,10 +87,16 @@ impl Filefmt {
         Ok(())
     }
 
+    pub fn fmt_headings(&mut self, ch: char) -> Result<(), AppError> {
+        self.text.insert(0, ch);
+        Ok(())
+    }
+
     pub fn fmt_bullets(&mut self) -> Result<(), AppError> {
         let reg = r"(?:\r?\n){2,}";
         let rep = "\n•";
-        self.fmt(reg, rep)?;
+        self.fmt(reg, rep)?;  // 使用正则表达式进行格式化
+        let _ = self.fmt_headings('•'); // 在文件开头加上“•”字符
         Ok(())
     }
 
